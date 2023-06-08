@@ -5,7 +5,23 @@ import { TPosition } from '../types/controllers';
 import { TTaskListId } from '../types/data';
 
 class TaskListService {
-	getColumn = async (title: TTaskListId) => await TaskList.find({ _id: title }).populate('data');
+	getColumn = async (title: TTaskListId) =>
+		await TaskList.findOne({ _id: title }).populate({
+			path: 'data',
+			populate: {
+				path: 'comments',
+				model: 'Comment',
+			},
+		});
+
+	getAll = async () =>
+		await TaskList.find().populate({
+			path: 'data',
+			populate: {
+				path: 'comments',
+				model: 'Comment',
+			},
+		});
 
 	async changePosition(start: TPosition, end: TPosition) {
 		const column = await TaskList.findOne({ _id: start.title });
@@ -22,8 +38,13 @@ class TaskListService {
 			{ _id: end.title },
 			{ $push: { data: { $each: [deletedTask._id], $position: end.index } } }
 		);
-
-		return deletedTask;
+		return TaskList.find({ $or: [{ _id: start.title }, { _id: end.title }] }).populate({
+			path: 'data',
+			populate: {
+				path: 'comments',
+				model: 'Comment',
+			},
+		});
 	}
 }
 

@@ -15,12 +15,15 @@ class TaskService {
 	getOne = async (id: string) => await Task.findById(id).populate('comments');
 
 	update = async (task: ITask & { _id: ObjectId }) =>
-		Task.findByIdAndUpdate(task._id, task, { new: true });
+		Task.findByIdAndUpdate(
+			task._id,
+			{ title: task.title, description: task.description, tags: task.tags },
+			{ new: true }
+		).populate('comments');
 
 	delete = async (id: string) => {
 		const task = await Task.findByIdAndDelete(id);
 		await TaskList.updateOne({ data: id }, { $pull: { data: id } });
-
 		return task;
 	};
 }

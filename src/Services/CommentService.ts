@@ -4,9 +4,9 @@ import { Task } from '../models/taskModel';
 import { IComment } from '../types/data';
 
 class CommentService {
-	create = async (comment: IComment, postId: string) => {
+	create = async (comment: IComment, taskId: string) => {
 		const newComment = await Comment.create(comment);
-		await Task.updateOne({ _id: postId }, { $push: { comments: newComment._id } });
+		await Task.updateOne({ _id: taskId }, { $push: { comments: newComment._id } });
 
 		return newComment;
 	};

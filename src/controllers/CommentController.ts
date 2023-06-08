@@ -4,15 +4,18 @@ import { ICustomRequest, IRequestWithId } from '../types/controllers';
 import { IComment } from '../types/data';
 
 export interface ICreateRequest extends IComment {
-	postId: string;
+	taskId: string;
 }
 
 class CommentController {
 	async create(req: ICustomRequest<ICreateRequest>, res: Response) {
-		const { author, text, postId } = req.body;
-		const comment = await CommentService.create({ author, text }, postId);
+		const { author, text, taskId } = req.body;
+		const comment = await CommentService.create({ author, text }, taskId);
 
-		res.json(comment);
+		res.json({
+			comment,
+			taskId,
+		});
 	}
 
 	async delete(req: IRequestWithId, res: Response) {

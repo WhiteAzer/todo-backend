@@ -12,7 +12,7 @@ class TaskController {
 		const { title, description, tags, target } = req.body;
 		const task = await TaskService.create({ title, description, tags }, target);
 
-		res.json(task);
+		res.json({ task, target });
 	}
 
 	async getOne(req: IRequestWithId, res: Response) {
@@ -23,7 +23,7 @@ class TaskController {
 
 	async update(req: ITaskRequest<{ _id: ObjectId }>, res: Response) {
 		const task = await TaskService.update(req.body);
-
+		console.log(task);
 		res.json(task);
 	}
 
